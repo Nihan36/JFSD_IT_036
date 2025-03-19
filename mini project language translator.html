@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Translator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            height: 100vh;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f2f5;
+            margin: 0;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+        }
+        textarea, select, button {
+            width: 100%;
+            margin-top: 10px;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        button {
+            background-color: black;
+            color: white;
+            cursor: pointer;
+            border: none;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Language Translator</h2>
+        <textarea id="inputText" rows="4" placeholder="Enter text to translate..."></textarea>
+        <select id="languageSelect">
+            <option value="es">Spanish</option>
+            <option value="fr">French</option>
+            <option value="de">German</option>
+            <option value="hi">Hindi</option>
+        </select>
+        <button onclick="translateText()">Translate</button>
+        <textarea id="outputText" rows="4" placeholder="Translation will appear here..." readonly></textarea>
+    </div>
+
+    <script>
+        async function translateText() {
+            const text = document.getElementById('inputText').value.trim();
+            const language = document.getElementById('languageSelect').value;
+
+            if (!text) {
+                alert('Please enter text to translate.');
+                return;
+            }
+
+            const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|${language}`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                if (data.responseData && data.responseData.translatedText) {
+                    document.getElementById('outputText').value = data.responseData.translatedText;
+                } else {
+                    alert('Translation failed. Please try again.');
+                }
+            } catch (error) {
+                alert('Error connecting to translation service. Please try again later.');
+            }
+        }
+    </script>
+</body>
+</html>
